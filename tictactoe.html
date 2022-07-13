@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTacToe Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;600&display=swap');
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .welcome{
+            font-size: 4vw;
+        }
+        body{
+            background-color: rgb(26, 205, 100);
+        }
+        nav{
+            background-color: #038f60 ;
+            /* #ff1dd6  navy*/
+            color: white;
+            height: 100%;
+            font-size: 3.7vw;
+            display: flex;
+            align-items: center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        nav ul{
+            list-style-type: none;
+
+        }
+        .game{
+            background-color: rgba(118, 255, 105, 0.758);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px ;
+            padding: 1cm;
+        }
+        @media all and (max-width:500px) {
+            .game{
+                flex-direction: column;
+            }
+        }
+        .info{
+            font-size: 3vw;
+        }
+        .gameInfo{
+            padding: 0 34px;
+            font-family: 'Baloo Da 2', cursive;
+        }
+        #reset{
+            margin: 0 23vm;
+            font-size: 2vmin;
+            /* height: 4vmin;
+            width: 5vmin; */
+            padding: 1% 2%;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: rgb(255, 10, 231);
+        }
+        #reset:hover{
+            padding: 1.5% 2.5%;
+        }
+
+
+        .imgsrc img{
+            /* display: none; */
+            width: 0px;
+            transition: width 0.7s ease-in-out ;
+        }
+        .cont{
+            display: grid;
+            position: relative;
+            grid-template-rows: repeat(3,10vw);
+            grid-template-columns: repeat(3,10vw);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        .box{
+            border: 2px solid white;
+            font-size: 8vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .box:hover{
+            cursor: pointer;
+            background-color: rgb(118, 255, 105);
+        }
+        .br0{
+            border-right: 0px;
+        }
+        .bl0{
+            border-left: 0px;
+        }
+        .bt0{
+            border-top: 0px;
+        }
+        .bb0{
+            border-bottom: 0px;
+        }
+
+        .line{
+            width: 30vw;
+            height: 3px;
+            background-color: #000;
+            position: absolute;
+            /* transform: rotate(135deg); */
+            top: 100vw;
+            transition: left 2s ease-in-out ;
+            transition: top 0.3s ease-in-out ;
+            transition: transform 1s ease-in-out ;
+            /* left: -10vw; */  
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li>TicTacToe</li>
+        </ul>
+    </nav>
+    <div class="game">
+       
+        <div class="cont">
+            <div class="line"></div>
+            <div class="box bl0 bt0"><span class="boxtext"></span></div>
+            <div class="box bt0"><span class="boxtext"></span></div>
+            <div class="box br0 bt0"><span class="boxtext"></span></div>
+            <div class="box bl0 "><span class="boxtext"></span></div>
+            <div class="box"><span class="boxtext"></span></div>
+            <div class="box br0"><span class="boxtext"></span></div>
+            <div class="box bl0 bb0"><span class="boxtext"></span></div>
+            <div class="box bb0"><span class="boxtext"></span></div>
+            <div class="box br0 bb0"><span class="boxtext"></span></div>
+        </div>
+        <div class="gameInfo">
+            <h2 class="welcome">Welcome to TicTacToe</h2>
+            <div>
+                <span class="info">Turn for X</span>
+                
+            </div>
+            <div class="imgsrc">
+                <img src="cutebear.gif" alt="Excited.gif">
+            </div>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+    <script>
+        console.log('Welcome to tictactoe')
+        let music = new Audio('music.mp3')
+        let ting = new Audio('ting.mp3')
+        let gameover = new Audio('music.mp3')
+        let rst = document.getElementById('reset');
+        let turn = 'X';
+        let gameisover = false;
+        rst.addEventListener('click', (e)=>{
+            let boxtexts = document.getElementsByClassName('boxtext')
+
+            Array.from(boxtexts).forEach(element=>{
+                element.innerText = '';
+            });
+            turn = 'X';
+            gameisover = false;
+            document.getElementsByClassName('info')[0].innerText = "Turn for X";
+            document.getElementsByClassName('info')[0].style.fontSize = "3vw";
+            document.getElementsByTagName('img')[0].style.width = "0px";
+            document.getElementsByClassName('line')[0].style.top = "100vw";
+            document.getElementsByClassName('line')[0].style.transform = "rotate(0deg)";
+            document.getElementsByClassName('line')[0].style.left = "0vw";
+            
+        })
+        const changeTurn = ()=> {
+            return turn === 'X'?'O':'X';
+        }
+        let boxtexts = document.getElementsByClassName('boxtext');
+        const checkWin = ()=>{
+            let wins = [
+                [0,1,2],
+                [3,4,5],
+                [6,7,8],
+                [0,3,6],
+                [1,4,7],
+                [2,5,8],
+                [0,4,8],
+                [2,4,6]
+            ]
+            wins.forEach(e =>{
+                if(boxtexts[e[0]].innerText === boxtexts[e[1]].innerText && boxtexts[e[1]].innerText === boxtexts[e[2]].innerText && boxtexts[e[0]].innerText !== '')
+                {
+                    document.querySelector('.info').innerText =  boxtexts[e[0]].innerText + " Won !!!";
+                    document.querySelector('.info').style.fontSize =  '4vw';
+                    gameisover = true;
+                    document.getElementsByTagName('img')[0].style.width = "42vmin";
+                    let j = wins.indexOf(e)
+                    if(j ==0) document.getElementsByClassName('line')[0].style.top = "5vw";
+                    else if(j ==1) document.getElementsByClassName('line')[0].style.top = "15vw";
+                    else if(j ==2) document.getElementsByClassName('line')[0].style.top = "25vw";
+                    else if(j ==3){ 
+                        document.getElementsByClassName('line')[0].style.top = "15vw";
+                        document.getElementsByClassName('line')[0].style.left = "-10vw";
+                        document.getElementsByClassName('line')[0].style.transform = "rotate(90deg)";
+
+                    }
+                    else if(j ===4){ 
+                        document.getElementsByClassName('line')[0].style.top = "15vw";
+                        document.getElementsByClassName('line')[0].style.left = "0vw";
+                        document.getElementsByClassName('line')[0].style.transform = "rotate(90deg)";
+
+                    }
+                    else if(j ===5){ 
+                        document.getElementsByClassName('line')[0].style.top = "15vw";
+                        document.getElementsByClassName('line')[0].style.left = "10vw";
+                        document.getElementsByClassName('line')[0].style.transform= "rotate(90deg)";
+                    }
+                    else if(j ===6){ 
+                        document.getElementsByClassName('line')[0].style.top = "15vw";
+                        // document.getElementsByClassName('line')[0].style.left = "10vw";
+                        document.getElementsByClassName('line')[0].style.transform= "rotate(45deg)";
+                    }
+                    else if(j ===7){ 
+                        document.getElementsByClassName('line')[0].style.top = "15vw";
+                        // document.getElementsByClassName('line')[0].style.left = "10vw";
+                        document.getElementsByClassName('line')[0].style.transform= "rotate(135deg)";
+                    }
+                return false;
+                }
+            })
+            return true;
+        }
+        function checkDraw() {
+            let b = true;
+            for (e of boxtexts){
+                if (e.innerText ==='') {                    
+                    b = false ;
+                }
+            }
+            if (b && !gameisover){
+                document.getElementsByClassName('info')[0].innerText = 'DRAW\nPlay Again by pressing Reset';
+                gameisover = true;
+            }
+            // return true;
+        }
+
+        // Game Logic
+        let boxes = document.getElementsByClassName('box')
+        Array.from(boxes).forEach(element => {
+            let boxtext = element.querySelector('.boxtext');
+            element.addEventListener('click', ()=> {
+                if(boxtext.innerText === ''){
+                    boxtext.innerText = turn;
+                    turn = changeTurn();
+                    ting.play();
+                    if (checkWin()){
+                        checkDraw();
+                    }
+                    if (!gameisover){                        
+                        document.getElementsByClassName('info')[0].innerText = 'Turn for ' + turn ;
+                        // document.getElementsByClassName('info')[0].innerText.style.fontSize = '20px' ;
+                    }
+                }
+            })
+        })
+        
+    </script>
+</body>
+</html>
